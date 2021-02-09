@@ -23,18 +23,14 @@ NAME	=	libmy_malloc.so
 
 CC	=	gcc
 
-#Note that the --coverage flag will be added only for testing and -ggdb for debuging
 CFLAGS	+=	-Wall		\
 			-Wextra		\
-			-shared		\
-
-LDLIBS	+=
 
 #IMPLICIT RULES
 ##########################################################################################
 
 %.o:	%.c
-	@$(CXX) -fpic -c $(CFLAGS) $(CPPFLAGS) $< -o $@
+	$(CC) -fpic -c $(CFLAGS) $(CPPFLAGS) $< -o $@
 	@echo -e "\e[0mCompiling : $@ \e[92mOK\e[0m"
 
 ##########################################################################################
@@ -44,14 +40,8 @@ all:	$(NAME)
 ##########################################################################################
 
 $(NAME):	$(srcobjects)
-	@$(CXX) $(CFLAGS) -o $(NAME) $(srcobjects) $(LDFLAGS) $(LDLIBS)
-	@echo -e "\e[0mLinking sources : \e[92mOK\e[0m"
-
-##########################################################################################
-
-debug:	CFLAGS += -ggdb
-debug:	fclean	$(NAME)
-	@gdb ./$(NAME)
+	$(CC) -shared  $(srcobjects) -o $(NAME)
+	@echo -e "\e[0mLinking lib : \e[92mOK\e[0m"
 
 ##########################################################################################
 

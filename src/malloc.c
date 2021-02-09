@@ -6,10 +6,9 @@
 */
 
 #include <unistd.h>
-#include <stddef.h>
 
-void *malloc(size_t size)
+void malloc(void)
 {
-    write(1, "test\n", 5);
-    return ((void *)1);
+    write(2, "test\n", 5);
+    return;
 }

@@ -5,7 +5,7 @@
 ** free.c
 */
 
-void free(void *)
+void free(void *adrs)
 {
     return;
 }
