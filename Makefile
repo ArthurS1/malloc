@@ -12,7 +12,7 @@
 #modularity purposes.                                                                    #
 ##########################################################################################
 
-srcobjects	=	src/malloc.o
+srcobjects	=	src/malloc.o	src/free.o
 
 ##########################################################################################
 
@@ -25,9 +25,8 @@ CC	=	gcc
 
 #Note that the --coverage flag will be added only for testing and -ggdb for debuging
 CFLAGS	+=	-Wall		\
-		-Wextra		\
-		-Werror		\
-		-shared
+			-Wextra		\
+			-shared		\
 
 LDLIBS	+=
 
@@ -35,7 +34,7 @@ LDLIBS	+=
 ##########################################################################################
 
 %.o:	%.c
-	@$(CXX) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
+	@$(CXX) -fpic -c $(CFLAGS) $(CPPFLAGS) $< -o $@
 	@echo -e "\e[0mCompiling : $@ \e[92mOK\e[0m"
 
 ##########################################################################################
