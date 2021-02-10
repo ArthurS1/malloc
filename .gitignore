@@ -1,1 +1,5 @@
 test/
+.gdbinit
+.ycm_extra_conf.py
+.gdb_history
+memory_dump.bin

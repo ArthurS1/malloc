@@ -5,7 +5,12 @@
 ** free.c
 */
 
-void free(void *adrs)
+#include "malloc.h"
+
+void free(void *addrs)
 {
-    return;
+    meta_t *meta = (meta_t *)(addrs - sizeof(meta_t));
+    meta->free = true;
+    meta->length += meta->offset;
+    meta->offset = 0;
 }
