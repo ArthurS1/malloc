@@ -19,5 +19,11 @@ typedef struct meta_s {
 } meta_t;
 
 void *malloc(size_t size);
+void *realloc(void *ptr, size_t size);
+void free(void *addrs);
+
+void *brk_start = NULL;
+
+#define PAGE_SIZE getpagesize()
 
 #endif /* !MALLOC_H_ */
