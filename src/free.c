@@ -9,8 +9,11 @@
 
 void free(void *addrs)
 {
-    meta_t *meta = (meta_t *)(addrs - sizeof(meta_t));
-    meta->free = true;
-    meta->length += meta->offset;
-    meta->offset = 0;
+    meta_t *meta = NULL;
+    if (addrs) {
+        meta = (meta_t *)(addrs - sizeof(meta_t));
+        meta->free = true;
+        meta->length += meta->offset;
+        meta->offset = 0;
+    }
 }
