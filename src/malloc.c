@@ -8,18 +8,7 @@
 #include <unistd.h>
 #include "malloc.h"
 
-size_t get_offset(void *addrs, size_t size)
-{
-    size_t i = 3;
-    size_t data_units[4] = {1, 2, 4, 8};
-
-    for (; size < data_units[i]; i--);
-    if (data_units[i] == 1)
-        return (0);
-    else
-        return (data_units[i] - ((size_t)addrs % data_units[i]) %
-        data_units[i]);
-}
+void *brk_start = NULL;
 
 void *allocate(void *addrs, size_t size)
 {
@@ -40,7 +29,7 @@ void *get_needed_pages(void *start, void *end)
         start += double_page_size;
     }
     if (sbrk(i * PAGE_SIZE * 2) == (void *) -1)
-        return ((void *) -1);
+        return (NULL);
     return (sbrk(0));
 }
 
@@ -51,10 +40,15 @@ void *append_alloc(size_t size, void *brk)
     while (current_node->next) {
         current_node = current_node->next;
     }
-    current_node->next = (void *)current_node + current_node->offset + current_node->length + sizeof(meta_t);
-    if (((void*)current_node->next + get_offset((meta_t *)current_node->next, size) + size) > brk) {
-        brk = get_needed_pages(current_node->next, ((void*)current_node->next + get_offset((meta_t *)current_node->next, size) + size));
+    current_node->next = (void *)current_node + current_node->offset + \
+    current_node->length + sizeof(meta_t);
+    if (((void*)current_node->next + get_offset((meta_t *)current_node->next, \
+    size) + size) > brk) {
+        brk = get_needed_pages(current_node->next, ((void*)current_node->next \
+        + get_offset((meta_t *)current_node->next, size) + size));
     }
+    if (!brk)
+        return (NULL);
     return allocate(current_node->next, size);
 }
 
@@ -65,7 +59,7 @@ meta_t *result = current_node;
     bool found_free_space = false;
 
     while (current_node) {
-        if (current_node->free && current_node->length < result->length &&
+        if (current_node->free && current_node->length < result->length && \
         current_node->length >= size + get_offset(current_node, size)) {
             result = current_node;
             found_free_space = true;
@@ -81,6 +75,8 @@ void *malloc(size_t size)
 {
     void *brk = sbrk(0);
 
+    if (!size)
+        return (NULL);
     if (!brk_start) {
         brk_start = sbrk(0);
         if (sbrk(PAGE_SIZE * 2) == (void *)-1)
