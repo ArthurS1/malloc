@@ -14,10 +14,9 @@ void *allocate(void *addrs, size_t size)
 {
     meta_t *meta = addrs;
     meta->free = false;
-    meta->length = size;
-    meta->offset = get_offset(addrs, size);
+    meta->size = get_offset(size);
     meta->next = NULL;
-    return (addrs + sizeof(meta_t) + meta->offset);
+    return (addrs + sizeof(meta_t));
 }
 
 void *get_needed_pages(void *start, void *end)
@@ -33,34 +32,44 @@ void *get_needed_pages(void *start, void *end)
     return (sbrk(0));
 }
 
-void *append_alloc(size_t size, void *brk)
+void *append_alloc_full(size_t size, void *brk)
 {
     meta_t *current_node = (meta_t *)brk_start;
 
     while (current_node->next) {
         current_node = current_node->next;
     }
-    current_node->next = (void *)current_node + current_node->offset + \
-    current_node->length + sizeof(meta_t);
-    if (((void*)current_node->next + get_offset((meta_t *)current_node->next, \
-    size) + size) > brk) {
+    current_node->next = (void *)current_node + sizeof(meta_t) + \
+    current_node->size;
+    if ((void*)(current_node->next + current_node->size + size) \
+    > brk)
         brk = get_needed_pages(current_node->next, ((void*)current_node->next \
-        + get_offset((meta_t *)current_node->next, size) + size));
-    }
+        + size));
     if (!brk)
         return (NULL);
     return allocate(current_node->next, size);
 }
 
+void *append_alloc(size_t size, void *brk)
+{
+    if (brk != brk_start) {
+        return append_alloc_full(size, brk);
+    }
+    brk = get_needed_pages(brk_start, (brk_start + size));
+    if (!brk)
+        return (NULL);
+    return allocate(brk_start, size);
+}
+
 void *find_best_fit(size_t size, void *brk)
 {
     meta_t *current_node = (meta_t *)brk_start;
-meta_t *result = current_node;
+    meta_t *result = current_node;
     bool found_free_space = false;
 
     while (current_node) {
-        if (current_node->free && current_node->length < result->length && \
-        current_node->length >= size + get_offset(current_node, size)) {
+        if (current_node->free && current_node->size < result->size && \
+        current_node->size >= get_offset(size)) {
             result = current_node;
             found_free_space = true;
         }
@@ -79,10 +88,7 @@ void *malloc(size_t size)
         return (NULL);
     if (!brk_start) {
         brk_start = sbrk(0);
-        if (sbrk(PAGE_SIZE * 2) == (void *)-1)
-            return (NULL);
-        brk = sbrk(0);
-        return (allocate(brk_start, size));
+        return (append_alloc(size, brk));
     }
     return (find_best_fit(size, brk));
 }

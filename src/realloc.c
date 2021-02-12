@@ -9,14 +9,15 @@
 #include <unistd.h>
 #include <string.h>
 
+/*
 void *realloc(void *ptr, size_t size)
 {
     void *new = malloc(size);
-    meta_t *old_meta = ptr - sizeof(meta_t);
+    meta_t *meta = ptr - sizeof(meta_t);
 
     if (!ptr || !new || !size)
         return (NULL);
-    memcpy(new, ptr + old_meta->offset, old_meta->length);
-    free(ptr);
+    memcpy(new, ptr, meta->size);
     return (new);
 }
+*/

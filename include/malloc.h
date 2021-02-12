@@ -15,12 +15,11 @@
 
 typedef struct meta_s {
     bool free;
-    size_t length;
-    size_t offset;
+    size_t size;
     struct meta_s *next;
 } meta_t;
 
-size_t get_offset(void *addrs, size_t size);
+size_t get_offset(size_t size);
 
 void *malloc(size_t size);
 void *realloc(void *ptr, size_t size);
