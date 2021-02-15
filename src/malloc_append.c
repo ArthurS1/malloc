@@ -28,7 +28,7 @@ static void *append_alloc_to_existing(size_t size, void *brk)
     end_of_alloc = (void*)last_node->next + sizeof(meta_t) + size;
     if (end_of_alloc > brk) {
         brk = get_needed_pages(last_node->next, ((void *)last_node->next \
-        + size));
+        + sizeof(meta_t) + size));
         if (!brk)
             return (NULL);
     }
@@ -37,7 +37,7 @@ static void *append_alloc_to_existing(size_t size, void *brk)
 
 static void *append_alloc_to_empty(size_t size, void *brk)
 {
-    brk = get_needed_pages(brk_start, (brk_start + size));
+    brk = get_needed_pages(brk_start, (brk_start + sizeof(meta_t) + size));
     if (!brk)
         return (NULL);
     return allocate(brk_start, size);
@@ -45,8 +45,11 @@ static void *append_alloc_to_empty(size_t size, void *brk)
 
 void *append_alloc(size_t size, void *brk)
 {
-    if (brk != brk_start) {
+    static bool first_append = true;
+
+    if (!first_append) {
         return append_alloc_to_existing(size, brk);
     }
+    first_append = false;
     return append_alloc_to_empty(size, brk);
 }

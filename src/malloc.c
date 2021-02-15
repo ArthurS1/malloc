@@ -1,5 +1,4 @@
-/*
-** EPITECH PROJECT, 2021
+/* ** EPITECH PROJECT, 2021
 ** my_malloc
 ** File description:
 ** malloc function
@@ -21,22 +20,22 @@ static size_t get_aligned_size(size_t size)
 
 static void *find_best_fit(size_t size, void *brk)
 {
-    /*meta_t *current_node = (meta_t *)brk_start;
-    meta_t *result = current_node;
-    bool found_free_space = false;
+    meta_t *current_node = (meta_t *)brk_start;
+    meta_t *best_fit_yet = NULL;
 
     while (current_node) {
-        if (current_node->free && current_node->size < result->size && \
-        current_node->size >= get_offset(size)) {
-            result = current_node;
-            found_free_space = true;
-            break;
+        if (current_node->free && current_node->size >= size) {
+            if (!best_fit_yet)
+                best_fit_yet = current_node;
+            else if (best_fit_yet && current_node->size < best_fit_yet->size)
+                best_fit_yet = current_node;
         }
         current_node = current_node->next;
     }
-    if (found_free_space)
-        return ((void*)result + sizeof(meta_t));*/
-    return (append_alloc(size, brk));
+    if (!best_fit_yet)
+        return (append_alloc(size, brk));
+    best_fit_yet->free = false;
+    return ((void*)best_fit_yet + sizeof(meta_t));
 }
 
 void *malloc(size_t size)
