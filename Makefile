@@ -5,33 +5,36 @@
 ## Makefile
 ##
 
-#QUICKSTART GUIDE:########################################################################
-#Objects variable contain .o file and output variable contains the output name we want\  #
-#therefore, liboutput is 'libmy.a' and libobjects features 'lib/my_putchar.o'\           #
-#Those objects are contained within lib.mk, test.mk and src.mk respectively for\         #
-#modularity purposes.                                                                    #
-##########################################################################################
 
-srcobjects	=	src/malloc.o	src/free.o	src/realloc.o	src/support.o 	src/calloc.o 	src/reallocarray.o
 
-##########################################################################################
+SRC	:=	src/malloc.c
+SRC += 	src/malloc_misc.c
+SRC += 	src/malloc_append.c
+SRC	+=	src/free.c
+SRC +=	src/realloc.c
+SRC +=	src/calloc.c
+SRC +=	src/reallocarray.c
+
+
 
 #COMPILATION OPTIONS : add flags or change compiler
 ##########################################################################################
 
-NAME	=	libmy_malloc.so
+NAME	:=	libmy_malloc.so
 
-CC	=	gcc
+CC	:=	gcc
 
-CFLAGS	+=	-Wall		\
-			-Wextra		\
-			-iquote ./include	\
+CFLAGS	:=	-Wall
+CFLAGS	+=	-Wextra
+CFLAGS	+=	-iquote ./include
+
+OBJ	=	$(SRC:.c=.o)
 
 #IMPLICIT RULES
 ##########################################################################################
 
 %.o:	%.c
-	$(CC) -fpic -c $(CFLAGS) $(CPPFLAGS) $< -o $@
+	@$(CC) -fpic -c $(CFLAGS) $(CPPFLAGS) $< -o $@
 	@echo -e "\e[0mCompiling : $@ \e[92mOK\e[0m"
 
 ##########################################################################################
@@ -40,14 +43,14 @@ all:	$(NAME)
 
 ##########################################################################################
 
-$(NAME):	$(srcobjects)
-	$(CC) -shared $(CFLAGS) $(srcobjects) -o $(NAME)
+$(NAME):	$(OBJ)
+	@$(CC) -shared $(CFLAGS) $(OBJ) -o $(NAME)
 	@echo -e "\e[0mLinking lib : \e[92mOK\e[0m"
 
 ##########################################################################################
 
 fclean:	clean
-	@rm -f $(srcmain)	$(srcobjects)
+	@rm -f	$(OBJ)
 	@echo -e "\e[91mRemoving object files : \e[0mOK"
 
 ##########################################################################################

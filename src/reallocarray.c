@@ -1,8 +1,8 @@
 /*
 ** EPITECH PROJECT, 2021
-** B-PSU-400-PAR-4-1-malloc-arthur1.soulie
+** my_malloc
 ** File description:
-** reallocarray.c
+** reallocarray function
 */
 
 #include <stddef.h>

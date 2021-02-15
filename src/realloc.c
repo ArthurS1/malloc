@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2021
 ** my_malloc
 ** File description:
-** realloc
+** realloc function
 */
 
 #include "malloc.h"
