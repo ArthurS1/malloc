@@ -22,6 +22,7 @@ typedef struct meta_s {
 size_t get_offset(size_t size);
 void *get_needed_pages(void *start, void *end);
 void *allocate(void *addrs, size_t size);
+void *append_alloc(size_t size, void *brk);
 
 void *malloc(size_t size);
 void free(void *addrs);
