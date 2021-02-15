@@ -12,7 +12,7 @@
 #modularity purposes.                                                                    #
 ##########################################################################################
 
-srcobjects	=	src/malloc.o	src/free.o	src/realloc.o	src/support.o
+srcobjects	=	src/malloc.o	src/free.o	src/realloc.o	src/support.o 	src/calloc.o 	src/reallocarray.o
 
 ##########################################################################################
 

@@ -22,7 +22,9 @@ typedef struct meta_s {
 size_t get_offset(size_t size);
 
 void *malloc(size_t size);
-void *realloc(void *ptr, size_t size);
 void free(void *addrs);
+void *calloc(size_t nmemb, size_t size);
+void *realloc(void *ptr, size_t size);
+void *reallocarray(void *ptr, size_t nmemb,size_t size);
 
 #endif /* !MALLOC_H_ */
