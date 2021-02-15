@@ -21,7 +21,7 @@ static size_t get_aligned_size(size_t size)
 
 static void *find_best_fit(size_t size, void *brk)
 {
-    meta_t *current_node = (meta_t *)brk_start;
+    /*meta_t *current_node = (meta_t *)brk_start;
     meta_t *result = current_node;
     bool found_free_space = false;
 
@@ -35,7 +35,7 @@ static void *find_best_fit(size_t size, void *brk)
         current_node = current_node->next;
     }
     if (found_free_space)
-        return ((void*)result + sizeof(meta_t));
+        return ((void*)result + sizeof(meta_t));*/
     return (append_alloc(size, brk));
 }
 
