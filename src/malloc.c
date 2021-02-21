@@ -8,8 +8,6 @@
 #include <unistd.h>
 #include "malloc.h"
 
-void *brk_start = NULL;
-
 static size_t get_aligned_size(size_t size)
 {
     size_t res = 2;
@@ -19,7 +17,7 @@ static size_t get_aligned_size(size_t size)
     return (res);
 }
 
-static void *find_best_fit(size_t size, void *brk)
+static void *find_best_fit(size_t size, void *brk, void *brk_start)
 {
     meta_t *current_node = (meta_t *)brk_start;
     meta_t *best_fit_yet = NULL;
@@ -34,13 +32,14 @@ static void *find_best_fit(size_t size, void *brk)
         current_node = current_node->next;
     }
     if (!best_fit_yet)
-        return (append_alloc(size, brk));
+        return (append_alloc(size, brk, brk_start));
     best_fit_yet->free = false;
     return ((void*)best_fit_yet + sizeof(meta_t));
 }
 
 void *malloc(size_t size)
 {
+    static void *brk_start = NULL;
     void *brk = sbrk(0);
 
     if (!size)
@@ -48,7 +47,7 @@ void *malloc(size_t size)
     size = get_aligned_size(size);
     if (!brk_start) {
         brk_start = sbrk(0);
-        return (append_alloc(size, brk));
+        return (append_alloc(size, brk, brk_start));
     }
-    return (find_best_fit(size, brk));
+    return (find_best_fit(size, brk, brk_start));
 }

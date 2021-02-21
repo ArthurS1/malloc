@@ -16,6 +16,5 @@ void *reallocarray(void *ptr, size_t nmemb,size_t size)
         return (NULL);
     if (nmemb && alloc_size / nmemb != size)
         return (NULL);
-    realloc(ptr, alloc_size);
-    return (NULL);
+    return (realloc(ptr, alloc_size));
 }
